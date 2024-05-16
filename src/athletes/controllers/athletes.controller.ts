@@ -3,12 +3,14 @@ import { AthletesService } from '../services/athletes.service';
 import { CreateAthleteDto } from '../dto/create-athlete.dto';
 import { UpdateAthleteDto } from '../dto/update-athlete.dto';
 
+
 @Controller('athletes')
 export class AthletesController {
   constructor(private readonly athletesService: AthletesService) {}
 
   @Post()
-  create(@Body() createAthleteDto: CreateAthleteDto) {
+  create(@Body() createAthleteDto: CreateAthleteDto)
+   {
     return this.athletesService.create(createAthleteDto);
   }
 
