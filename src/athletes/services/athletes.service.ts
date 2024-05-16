@@ -1,26 +1,39 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAthleteDto } from '../dto/create-athlete.dto';
 import { UpdateAthleteDto } from '../dto/update-athlete.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Athlete } from '../entities/athlete.entity';
 
 @Injectable()
 export class AthletesService {
-  create(createAthleteDto: CreateAthleteDto) {
-    return 'This action adds a new athlete';
+
+  constructor(
+    @InjectRepository(Athlete)
+    private readonly athleteRepository: Repository<Athlete>,
+  ) {}
+  async create(createAthleteDto: CreateAthleteDto): Promise<Athlete> {
+    
+    const athlete = this.athleteRepository.create(createAthleteDto)
+    return await this.athleteRepository.save(athlete)
   }
 
-  findAll() {
-    return `This action returns all athletes`;
+  async findAll() {
+    return await this.athleteRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} athlete`;
+  async findOne(id: number) {
+    const athlete = await this.athleteRepository.findOneBy( {id} )
+    return athlete
   }
 
-  update(id: number, updateAthleteDto: UpdateAthleteDto) {
-    return `This action updates a #${id} athlete`;
+  async update(id: number, updateAthleteDto: UpdateAthleteDto) {
+    const athlete= await this.athleteRepository.findOneBy({id})
+    this.athleteRepository.merge(athlete, updateAthleteDto)
+    return await this.athleteRepository.save(athlete)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} athlete`;
+  async remove(id: number) {
+    return await this.athleteRepository.delete({id})
   }
 }
