@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAthleteDto } from '../dto/create-athlete.dto';
 import { UpdateAthleteDto } from '../dto/update-athlete.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Athlete } from '../entities/athlete.entity';
 
 @Injectable()
@@ -18,8 +18,25 @@ export class AthletesService {
     return await this.athleteRepository.save(athlete)
   }
 
-  async findAll() {
-    return await this.athleteRepository.find();
+  async findByParam(searchTerm: string, orderBy: string,
+    order: 'ASC' | 'DESC',
+    page: number,
+    pageSize: number){
+    
+      const [result, total] = await this.athleteRepository.findAndCount( {
+      where: {
+      name: ILike(`%${searchTerm}%`)},
+      order: { [orderBy]: order },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+   },);
+
+   return {
+    data: result,
+    total,
+    page,
+    pageCount: Math.ceil(total / pageSize)
+  };
   }
 
   async findOne(id: number) {
@@ -36,4 +53,11 @@ export class AthletesService {
   async remove(id: number) {
     return await this.athleteRepository.delete({id})
   }
+
+  async findAll(){
+    return await this.athleteRepository.find();
+  }
+
+
+  
 }
