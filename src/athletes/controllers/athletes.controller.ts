@@ -3,8 +3,9 @@ import { AthletesService } from '../services/athletes.service';
 import { CreateAthleteDto } from '../dto/create-athlete.dto';
 import { UpdateAthleteDto } from '../dto/update-athlete.dto';
 import { SearchAthleteDto } from '../dto/search-athlete.dto';
+import { ApiTags } from '@nestjs/swagger';
 
-
+@ApiTags('athletes')
 @Controller('athletes')
 export class AthletesController {
   constructor(private readonly athletesService: AthletesService) {}
@@ -26,10 +27,18 @@ export class AthletesController {
   } */
 
   @Get('search')
-  findByParam(@Query() searchAthleteDto: SearchAthleteDto) {
-    const { searchTerm, orderBy, order, page, pageSize, columnName } = searchAthleteDto;
+  async findByParam(@Query() searchAthleteDto: SearchAthleteDto) {
+    try {
+      const { searchTerm, orderBy, order, page, pageSize, columnName } = searchAthleteDto;
+      
+      return await this.athletesService.findByParam(searchTerm,orderBy, order,page, pageSize, columnName);
+    } catch (error) {
+
+      throw new BadRequestException('Failed to search athletes', error.message);
+      
+    }
     
-    return this.athletesService.findByParam(searchTerm,orderBy, order,page, pageSize, columnName);
+    
   }
 
 
