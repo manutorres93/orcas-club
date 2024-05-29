@@ -17,11 +17,11 @@ export class AthletesService {
     const athlete = this.athleteRepository.create(createAthleteDto)
     return await this.athleteRepository.save(athlete)
   }
-
+/* 
   async findByParam(searchTerm: string, orderBy: string,
     order: 'ASC' | 'DESC',
     page: number,
-    pageSize: number){
+    pageSize: number ){
     
       const [result, total] = await this.athleteRepository.findAndCount( {
       where: {
@@ -29,14 +29,36 @@ export class AthletesService {
       order: { [orderBy]: order },
       take: pageSize,
       skip: (page - 1) * pageSize,
-   },);
+   },); */
 
-   return {
-    data: result,
-    total,
-    page,
-    pageCount: Math.ceil(total / pageSize)
-  };
+  async findByParam(searchTerm: string, orderBy: string,
+    order: 'ASC' | 'DESC',
+    page: number,
+    pageSize: number, columnName: string){
+
+
+      try {
+
+        const [result, total] = await this.athleteRepository.findAndCount( {
+          where: {
+          [columnName]: ILike(`%${searchTerm}%`)},
+          order: { [orderBy]: order },
+          take: pageSize,
+          skip: (page - 1) * pageSize,
+       },);
+
+       return {
+        data: result,
+        total,
+        page,
+        pageCount: Math.ceil(total / pageSize)
+      };
+        
+      } catch (error) {
+        throw new BadRequestException('Failed to find athletes with provided parameters', error.message);
+        
+      }
+   
   }
 
   async findOne(id: number) {
