@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete,Query, BadRequestExce
 import { AthletesService } from '../services/athletes.service';
 import { CreateAthleteDto } from '../dto/create-athlete.dto';
 import { UpdateAthleteDto } from '../dto/update-athlete.dto';
+import { SearchAthleteDto } from '../dto/search-athlete.dto';
 
 
 @Controller('athletes')
@@ -14,13 +15,21 @@ export class AthletesController {
     return this.athletesService.create(createAthleteDto);
   }
 
-  @Get('search')
-  findByParam(@Query('name') name: string,
+  /* @Get('search')
+  findByParam(@Query('term') searchTerm: string,
   @Query('orderBy') orderBy: string,
     @Query('order') order:'ASC' | 'DESC' = 'ASC',
     @Query('page')page: number,
-    @Query('pageSize') pageSize: number) {
-    return this.athletesService.findByParam(name,orderBy, order,page, pageSize);
+    @Query('pageSize') pageSize: number,
+    @Query('column') column: string) {
+    return this.athletesService.findByParam(searchTerm,orderBy, order,page, pageSize, column);
+  } */
+
+  @Get('search')
+  findByParam(@Query() searchAthleteDto: SearchAthleteDto) {
+    const { searchTerm, orderBy, order, page, pageSize, columnName } = searchAthleteDto;
+    
+    return this.athletesService.findByParam(searchTerm,orderBy, order,page, pageSize, columnName);
   }
 
 

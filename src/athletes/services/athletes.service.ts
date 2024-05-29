@@ -17,19 +17,34 @@ export class AthletesService {
     const athlete = this.athleteRepository.create(createAthleteDto)
     return await this.athleteRepository.save(athlete)
   }
+/* 
+  async findByParam(searchTerm: string, orderBy: string,
+    order: 'ASC' | 'DESC',
+    page: number,
+    pageSize: number,  columnName: string ){
+    
+      const [result, total] = await this.athleteRepository.findAndCount( {
+      where: {
+      [columnName]: ILike(`%${searchTerm}%`)},
+      order: { [orderBy]: order },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+   },); */
 
   async findByParam(searchTerm: string, orderBy: string,
     order: 'ASC' | 'DESC',
     page: number,
-    pageSize: number){
+    pageSize: number, columnName: string){
     
       const [result, total] = await this.athleteRepository.findAndCount( {
       where: {
-      name: ILike(`%${searchTerm}%`)},
+      [columnName]: ILike(`%${searchTerm}%`)},
       order: { [orderBy]: order },
       take: pageSize,
       skip: (page - 1) * pageSize,
    },);
+   
+   
 
    return {
     data: result,
