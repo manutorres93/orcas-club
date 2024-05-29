@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete,Query, BadRequestException, ParseIntPipe } from '@nestjs/common';
 import { AthletesService } from '../services/athletes.service';
 import { CreateAthleteDto } from '../dto/create-athlete.dto';
 import { UpdateAthleteDto } from '../dto/update-athlete.dto';
@@ -14,10 +14,15 @@ export class AthletesController {
     return this.athletesService.create(createAthleteDto);
   }
 
-  @Get()
-  findAll() {
-    return this.athletesService.findAll();
+  @Get('search')
+  findByParam(@Query('name') name: string,
+  @Query('orderBy') orderBy: string,
+    @Query('order') order:'ASC' | 'DESC' = 'ASC',
+    @Query('page')page: number,
+    @Query('pageSize') pageSize: number) {
+    return this.athletesService.findByParam(name,orderBy, order,page, pageSize);
   }
+
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -33,4 +38,15 @@ export class AthletesController {
   remove(@Param('id') id: string) {
     return this.athletesService.remove(+id);
   }
+
+  @Get()
+  findAll() {
+    return this.athletesService.findAll();
+  }
+
+  
+
+  
+
+
 }
