@@ -34,7 +34,7 @@ export class AthletesService {
   async findByParam(searchTerm: string, orderBy: string,
     order: 'ASC' | 'DESC',
     page: number,
-    pageSize: number, columnName: string){
+    pageSize: number, columnName: string) : Promise<{ data: Athlete[], total: number, page: number, pageCount: number }>{
 
 
       try {
@@ -61,22 +61,22 @@ export class AthletesService {
    
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Athlete> {
     const athlete = await this.athleteRepository.findOneBy( {id} )
     return athlete
   }
 
-  async update(id: number, updateAthleteDto: UpdateAthleteDto) {
+  async update(id: number, updateAthleteDto: UpdateAthleteDto) : Promise<Athlete> {
     const athlete= await this.athleteRepository.findOneBy({id})
     this.athleteRepository.merge(athlete, updateAthleteDto)
     return await this.athleteRepository.save(athlete)
   }
 
-  async remove(id: number) {
+  async remove(id: number){
     return await this.athleteRepository.delete({id})
   }
 
-  async findAll(){
+  async findAll() : Promise<Athlete[]>{
     return await this.athleteRepository.find();
   }
 

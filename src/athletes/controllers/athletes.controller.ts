@@ -43,8 +43,8 @@ export class AthletesController {
 
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.athletesService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.athletesService.findOne(id);
   }
 
   @Patch(':id')
